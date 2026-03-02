@@ -100,7 +100,8 @@ class GradientBoostingModel:
         # TODO: Implement train/test split and track feature names
         X_train, X_test, y_train, y_test = train_test_split(X, y, 
                                                             test_size=test_size,
-                                                            random_state=random_state)
+                                                            random_state=random_state,
+                                                            stratify=y)
         self.feature_names = list(X.columns)
         return X_train, X_test, y_train, y_test
 
@@ -297,7 +298,8 @@ class GradientBoostingModel:
         model = grid_search.best_estimator_
 
         results = {"best_params" : grid_search.best_params_,
-                   "best_score" : grid_search.best_score_}
+                   "best_score" : grid_search.best_score_,
+                   "results" : grid_search.cv_results_}
         return results
 
     def plot_tree(

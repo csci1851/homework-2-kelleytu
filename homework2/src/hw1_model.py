@@ -165,6 +165,7 @@ class HeartDiseaseClassifier:
         C: float = 1.0,
         random_state: int = 42,
         selected_features: Optional[List[str]] = None,
+        model_type: str = "linear"
     ):
         """
         Initialize the classifier with specified parameters. Uses the lbfgs solver.
@@ -178,6 +179,7 @@ class HeartDiseaseClassifier:
         self.model = None
         self.scaler = StandardScaler()
         self.selected_features = selected_features
+        self.model_type = model_type
 
     def preprocess_features(self, X: pd.DataFrame) -> pd.DataFrame:
         """
@@ -212,7 +214,13 @@ class HeartDiseaseClassifier:
         
         X_preprocessed = self.preprocess_features(X)
         X_scaled = self.scaler.fit_transform(X_preprocessed)
-        self.model = LogisticRegression(C=self.C, random_state=self.random_state)
+        if self.model_type == "linear":
+            self.model = LogisticRegression(C=self.C, random_state=self.random_state)
+        elif self.model_type == "lasso":
+            self.model = LogisticRegression(C=self.C, 
+                                            random_state=self.random_state,
+                                            penalty="l1",
+                                            solver="saga")
         self.model.fit(X_scaled, y)
 
 
